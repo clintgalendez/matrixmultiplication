@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Canvas, Button, PhotoImage, Frame
 
 ASSETS_PATH = Path(r"ui/assets/landingPage")
 
@@ -41,7 +41,7 @@ def landing_page_start(root):
 
     image_image_1 = PhotoImage(
         file=relative_to_assets("image_1.png"))
-    image_1 = canvas.create_image(
+    canvas.create_image(
         965.0,
         215.0,
         image=image_image_1
@@ -49,7 +49,7 @@ def landing_page_start(root):
 
     image_image_2 = PhotoImage(
         file=relative_to_assets("image_2.png"))
-    image_2 = canvas.create_image(
+    canvas.create_image(
         320.0,
         368.0,
         image=image_image_2

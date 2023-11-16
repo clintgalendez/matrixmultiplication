@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Canvas, Entry, Button, PhotoImage, Frame
 
 ASSETS_PATH = Path(r"ui/assets/setMatrixSize")
 
@@ -24,7 +24,7 @@ def set_matrix_size_start(root):
 
     set_matrix_size_entry_image = PhotoImage(
         file=relative_to_assets("entry_1.png"))
-    set_matrix_size_bg = canvas.create_image(
+    canvas.create_image(
         835.0,
         434.0,
         image=set_matrix_size_entry_image
@@ -102,4 +102,3 @@ def set_matrix_size_start(root):
     set_matrix_size.size_submit_button = size_submit_button
 
     return set_matrix_size
-
