@@ -23,16 +23,16 @@ def landing_page_start(root):
     )
     canvas.pack(fill="both", expand=True)
 
-    button_image_1 = PhotoImage(
+    start_button_image = PhotoImage(
         file=relative_to_assets("button_1.png"))
-    button_1 = Button(
+    start_button = Button(
         landing_page,
-        image=button_image_1,
+        image=start_button_image,
         borderwidth=0,
         highlightthickness=0,
         relief="flat"
     )
-    button_1.place(
+    start_button.place(
         x=775.0,
         y=540.0,
         width=375.0,
@@ -76,7 +76,7 @@ def landing_page_start(root):
     # Keep references to PhotoImage objects to prevent them from being garbage collected
     landing_page.image_1 = image_image_1
     landing_page.image_2 = image_image_2
-    landing_page.image_3 = button_image_1
-    landing_page.button_1 = button_1
+    landing_page.image_3 = start_button_image
+    landing_page.start_button = start_button
 
     return landing_page

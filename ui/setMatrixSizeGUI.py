@@ -22,14 +22,14 @@ def set_matrix_size_start(root):
 
     canvas.pack(fill="both", expand=True)
 
-    entry_image_1 = PhotoImage(
+    set_matrix_size_entry_image = PhotoImage(
         file=relative_to_assets("entry_1.png"))
-    entry_bg_1 = canvas.create_image(
+    set_matrix_size_bg = canvas.create_image(
         835.0,
         434.0,
-        image=entry_image_1
+        image=set_matrix_size_entry_image
     )
-    entry_1 = Entry(
+    set_matrix_size_entry = Entry(
         set_matrix_size,
         bg="#7853B3",
         fg="#FFFFFF",
@@ -37,7 +37,7 @@ def set_matrix_size_start(root):
         borderwidth=0,
         font=("Poppins Bold", 30),
     )
-    entry_1.place(
+    set_matrix_size_entry.place(
         x=800.0,
         y=400.0,
         width=70,
@@ -62,17 +62,17 @@ def set_matrix_size_start(root):
         font=("Poppins Bold", 28 * -1)
     )
 
-    button_image_1 = PhotoImage(
+    size_submit_button_image = PhotoImage(
         file=relative_to_assets("button_1.png"))
-    button_1 = Button(
+    size_submit_button = Button(
         set_matrix_size,
-        image=button_image_1,
+        image=size_submit_button_image,
         borderwidth=0,
         highlightthickness=0,
         command=lambda: print("button_1 clicked"),
         relief="flat"
     )
-    button_1.place(
+    size_submit_button.place(
         x=452.0,
         y=540.0,
         width=375.0,
@@ -97,8 +97,9 @@ def set_matrix_size_start(root):
         font=("Poppins Regular", 22 * -1)
     )
 
-    set_matrix_size.image_1 = entry_image_1
-    set_matrix_size.image_2 = button_image_1
+    set_matrix_size.image_1 = set_matrix_size_entry_image
+    set_matrix_size.image_2 = size_submit_button_image
+    set_matrix_size.size_submit_button = size_submit_button
 
     return set_matrix_size
 
