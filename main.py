@@ -1,7 +1,5 @@
 from tkinter import Tk
 
-from PIL import ImageTk
-
 import ui.mainGUI as mainGUI
 
 root = Tk()
@@ -15,6 +13,7 @@ matrix_size = 0
 row_a = 0
 column_b = 0
 common = 0
+history_stack = []
 
 main_page = mainGUI.main_start(root)
 
@@ -81,11 +80,24 @@ def calculate():
 
 def show_solution_process(is_next: bool):
     global row_a, column_b, common
-    print(row_a, column_b, common)
 
     matrix_a.dehighlight_all()
     matrix_b.dehighlight_all()
     matrix_c.dehighlight_all()
+
+    if is_next:
+        history_stack.append((row_a, column_b, common))
+        print(history_stack)
+    elif history_stack:
+        row_a, column_b, common = history_stack.pop()
+        print(history_stack)
+
+        # Check if there's another item in the stack
+        if history_stack:
+            row_a, column_b, common = history_stack[-1]
+            print(history_stack)
+
+    print(row_a, column_b, common)
 
     for r in range(matrix_size):
         matrix_a.highlight_cells(
@@ -115,32 +127,18 @@ def show_solution_process(is_next: bool):
     matrix_b.refresh()
     matrix_c.refresh()
 
-    if is_next:
-        if column_b < matrix_size - 1:
-            column_b += 1
-        else:
-            column_b = 0
-            if row_a < matrix_size - 1:
-                row_a += 1
-            else:
-                row_a = 0
-                if common < matrix_size - 1:
-                    common += 1
-                else:
-                    common = 0
+    if column_b < matrix_size - 1:
+        column_b += 1
     else:
-        if column_b > 0:
-            column_b -= 1
+        column_b = 0
+        if row_a < matrix_size - 1:
+            row_a += 1
         else:
-            column_b = matrix_size - 1
-            if row_a > 0:
-                row_a -= 1
+            row_a = 0
+            if common < matrix_size - 1:
+                common += 1
             else:
-                row_a = matrix_size - 1
-                if common > 0:
-                    common -= 1
-                else:
-                    common = matrix_size - 1
+                common = 0
 
 
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
@@ -150,8 +148,8 @@ by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_
 
 calculate_button.configure(command=lambda: root.after(time_quantum, calculate))
 
-next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(1)))
-back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(-1)))
+next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
+back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
 
 
 show_frame(f1)
