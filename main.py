@@ -1,14 +1,42 @@
 from tkinter import Tk
-import ui.landingPageGUI as landingPageGUI
-import ui.setMatrixSizeGUI as setMatrixSizeGUI
-import ui.setMatrixDataGUI as setMatrixDataGUI
+
+from PIL import ImageTk
+
+import ui.mainGUI as mainGUI
 
 root = Tk()
 root.geometry("1280x720")
-root.configure(bg="#FFFFFF")
+root.configure(bg="red")
 root.resizable(False, False)
 
 current_frame = None
+time_quantum = 500
+matrix_size = 0
+row_a = 0
+column_b = 0
+common = 0
+
+main_page = mainGUI.main_start(root)
+
+f1 = main_page
+
+by_2_size_button = f1.by_2_size_button
+by_3_size_button = f1.by_3_size_button
+by_4_size_button = f1.by_4_size_button
+by_5_size_button = f1.by_5_size_button
+
+calculate_button = f1.calculate_button
+
+next_button = f1.next_button
+back_button = f1.back_button
+
+solution_description = f1.solution_description
+
+matrix_a = f1.matrix_a_sheet
+matrix_b = f1.matrix_b_sheet
+matrix_c = f1.matrix_c_sheet
+
+canvas = f1.canvas
 
 
 def show_frame(frame_to_show):
@@ -20,19 +48,111 @@ def show_frame(frame_to_show):
     frame_to_show.pack(fill="both", expand=True)
 
 
-landing_page = landingPageGUI.landing_page_start(root)
-set_matrix_size = setMatrixSizeGUI.set_matrix_size_start(root)
-set_matrix_data = setMatrixDataGUI.set_matrix_data_start(root)
+def set_matrix_size_submit(matrix_size_to_set):
+    global matrix_size
 
-f1 = landing_page
-f2 = set_matrix_size
-f3 = set_matrix_data
+    matrix_size = matrix_size_to_set
 
-landing_page_button = landing_page.start_button
-landing_page_button.bind("<Button-1>", lambda event: root.after(500, lambda: show_frame(f2)))
+    matrix_a.set_sheet_data_and_display_dimensions(matrix_size, matrix_size)
+    matrix_b.set_sheet_data_and_display_dimensions(matrix_size, matrix_size)
+    matrix_c.set_sheet_data_and_display_dimensions(matrix_size, matrix_size)
 
-size_submit_button = set_matrix_size.size_submit_button
-size_submit_button.bind("<Button-1>", lambda event: root.after(500, lambda: show_frame(f3)))
+    matrix_a.refresh()
+    matrix_b.refresh()
+    matrix_c.refresh()
+
+    canvas.itemconfigure("image_6", state="hidden")
+
+
+def calculate():
+    # Initialize the result matrix with zeros
+    result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
+
+    # Perform matrix multiplication
+    for i in range(matrix_size):
+        for j in range(matrix_size):
+            for k in range(matrix_size):
+                result[i][j] += int(matrix_a.get_cell_data(i, k)) * int(matrix_b.get_cell_data(k, j))
+                matrix_c.set_cell_data(i, j, result[i][j])
+
+    matrix_c.refresh()
+    next_button.configure(state="normal")
+
+
+def show_solution_process(is_next: bool):
+    global row_a, column_b, common
+    print(row_a, column_b, common)
+
+    matrix_a.dehighlight_all()
+    matrix_b.dehighlight_all()
+    matrix_c.dehighlight_all()
+
+    for r in range(matrix_size):
+        matrix_a.highlight_cells(
+            row=row_a, column=r, bg="#7ED957"
+        )
+
+        matrix_b.highlight_cells(
+            row=r, column=column_b, bg="#7ED957"
+        )
+
+    matrix_c.highlight_cells(
+        row=row_a, column=column_b, bg="#7ED957"
+    )
+
+    current_solution_text = "C" + str(row_a + 1) + str(column_b + 1) + " = "
+
+    current_solution_text += (matrix_a.get_cell_data(row_a, common) + "(" +
+                              matrix_b.get_cell_data(common, column_b)) + ")"
+
+    for r in range(1, matrix_size):
+        current_solution_text += " + " + (matrix_a.get_cell_data(row_a, r) + "(" +
+                                          matrix_b.get_cell_data(r, column_b)) + ")"
+
+    solution_description.set(current_solution_text)
+
+    matrix_a.refresh()
+    matrix_b.refresh()
+    matrix_c.refresh()
+
+    if is_next:
+        if column_b < matrix_size - 1:
+            column_b += 1
+        else:
+            column_b = 0
+            if row_a < matrix_size - 1:
+                row_a += 1
+            else:
+                row_a = 0
+                if common < matrix_size - 1:
+                    common += 1
+                else:
+                    common = 0
+    else:
+        if column_b > 0:
+            column_b -= 1
+        else:
+            column_b = matrix_size - 1
+            if row_a > 0:
+                row_a -= 1
+            else:
+                row_a = matrix_size - 1
+                if common > 0:
+                    common -= 1
+                else:
+                    common = matrix_size - 1
+
+
+by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
+by_3_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(3)))
+by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(4)))
+by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(5)))
+
+calculate_button.configure(command=lambda: root.after(time_quantum, calculate))
+
+next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(1)))
+back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(-1)))
+
 
 show_frame(f1)
 root.mainloop()
