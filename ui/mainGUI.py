@@ -138,8 +138,8 @@ def main_start(root):
     )
 
     canvas.create_text(
-        890.0,
-        170.0,
+        1005.0,
+        160.0,
         anchor="nw",
         text="Matrix C",
         fill="#000000",
@@ -181,8 +181,8 @@ def main_start(root):
     )
 
     canvas.create_text(
-        440.0,
-        170.0,
+        555.0,
+        160.0,
         anchor="nw",
         text="Matrix B",
         fill="#000000",
@@ -224,8 +224,8 @@ def main_start(root):
     )
 
     canvas.create_text(
-        60.0,
-        170.0,
+        175.0,
+        160.0,
         anchor="nw",
         text="Matrix A",
         fill="#000000",
@@ -241,7 +241,7 @@ def main_start(root):
     )
 
     canvas.create_text(
-        60.0,
+        270.0,
         50.0,
         anchor="nw",
         text="Square Matrices Multiplication",
@@ -250,7 +250,7 @@ def main_start(root):
     )
 
     canvas.create_text(
-        890.0,
+        1005.0,
         50.0,
         anchor="nw",
         text="Solution",
