@@ -12,7 +12,7 @@ def relative_to_assets(path: str) -> Path:
 
 # Random comment
 
-opacity = 255
+
 def main_start(root):
     main_frame = Frame(root)
     main_frame.pack(fill="both", expand=True)
@@ -405,6 +405,7 @@ def main_start(root):
     matrix_c_sheet.enable_bindings("all")
     matrix_c_sheet.align("center")
 
+    # Reference to all the variables
     main_frame.image_image_1 = image_image_1
     main_frame.reset_matrices_button_image = reset_matrices_button_image
     main_frame.calculate_button_image = calculate_button_image
@@ -431,6 +432,9 @@ def main_start(root):
 
     main_frame.next_button = next_button
     main_frame.back_button = back_button
+
+    main_frame.clear_matrix_a_button = clear_matrix_a_button
+    main_frame.clear_matrix_b_button = clear_matrix_b_button
 
     main_frame.solution_description = solution_description_variable
 

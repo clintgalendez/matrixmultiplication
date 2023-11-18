@@ -29,6 +29,8 @@ calculate_button = f1.calculate_button
 next_button = f1.next_button
 back_button = f1.back_button
 
+clear_matrix_a_button = f1.clear_matrix_a_button
+
 solution_description = f1.solution_description
 
 matrix_a = f1.matrix_a_sheet
@@ -141,6 +143,11 @@ def show_solution_process(is_next: bool):
                 common = 0
 
 
+def clear_matrix_a():
+    #Clear the matrix
+    return
+
+
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
 by_3_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(3)))
 by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(4)))
@@ -150,6 +157,8 @@ calculate_button.configure(command=lambda: root.after(time_quantum, calculate))
 
 next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
 back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
+
+clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: matrix_a.clear_matrix_a()))
 
 
 show_frame(f1)
