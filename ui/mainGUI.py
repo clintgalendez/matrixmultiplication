@@ -10,6 +10,7 @@ ASSETS_PATH = Path(r"ui/assets/main")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
+# Random comment
 
 opacity = 255
 def main_start(root):
