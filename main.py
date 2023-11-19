@@ -1,16 +1,11 @@
-import time
 from tkinter import Tk
 
 import ui.mainGUI as mainGUI
-from pynput.keyboard import Key, Controller
-import ui.errorPage as errorPage
 
 root = Tk()
 root.geometry("1280x720")
 root.configure(bg="red")
 root.resizable(False, False)
-
-keyboard = Controller()
 
 current_frame = None
 time_quantum = 500
@@ -21,10 +16,8 @@ common = 0
 history_stack = []
 
 main_page = mainGUI.main_start(root)
-error_page = errorPage.error_page_start(root)
 
 f1 = main_page
-f2 = error_page
 
 by_2_size_button = f1.by_2_size_button
 by_3_size_button = f1.by_3_size_button
@@ -72,15 +65,7 @@ def set_matrix_size_submit(matrix_size_to_set):
     canvas.itemconfigure("image_6", state="hidden")
 
 
-def format_cell():
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
-
-    root.after(time_quantum, calculate)
-
-
 def calculate():
-    print("hello")
     # Initialize the result matrix with zeros
     result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
 
@@ -88,7 +73,7 @@ def calculate():
     for i in range(matrix_size):
         for j in range(matrix_size):
             for k in range(matrix_size):
-                result[i][j] += (int(matrix_a.get_cell_data(i, k)) * int(matrix_b.get_cell_data(k, j)))
+                result[i][j] += int(matrix_a.get_cell_data(i, k)) * int(matrix_b.get_cell_data(k, j))
                 matrix_c.set_cell_data(i, j, result[i][j])
 
     matrix_c.refresh()
@@ -104,12 +89,17 @@ def show_solution_process(is_next: bool):
 
     if is_next:
         history_stack.append((row_a, column_b, common))
+        print(history_stack)
     elif history_stack:
         row_a, column_b, common = history_stack.pop()
+        print(history_stack)
 
         # Check if there's another item in the stack
         if history_stack:
             row_a, column_b, common = history_stack[-1]
+            print(history_stack)
+
+    print(row_a, column_b, common)
 
     for r in range(matrix_size):
         matrix_a.highlight_cells(
@@ -154,32 +144,30 @@ def show_solution_process(is_next: bool):
 
 
 def clear_cell(matrix):
-    currently_selected = matrix.get_currently_selected()
-    r = currently_selected.row
-    c = currently_selected.column
+    # Commented code to delete selected row
 
-    matrix.set_cell_data(r, c, value="")
-    matrix.refresh()
+    # currently_selected = matrix.get_currently_selected()
+    # r = currently_selected.row
+    # c = currently_selected.column
+    # matrix.set_cell_data(r, c, value=None)
 
+    for i in range(matrix_size):
+        for j in range(matrix_size):
+            matrix.set_cell_data(i, j, value=None)
+            matrix.refresh()
 
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
 by_3_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(3)))
 by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(4)))
 by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(5)))
 
-calculate_button.configure(command=lambda: root.after(time_quantum, format_cell))
+calculate_button.configure(command=lambda: root.after(time_quantum, calculate))
 
 next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
 back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
 
-<<<<<<< HEAD
 clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_a)))
 clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_b)))
-=======
-clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: matrix_a.clear_matrix_a()))
-
-# TODO: For (clint galendez) Add a function that it will disable calculate button if there's no data in the matrix
->>>>>>> ff5da18cee374aea4cf0e0be8ba9799217a15b1f
 
 show_frame(f1)
 root.mainloop()
