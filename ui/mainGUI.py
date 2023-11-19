@@ -10,8 +10,6 @@ ASSETS_PATH = Path(r"ui/assets/main")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-# Random comment
-
 
 def main_start(root):
     main_frame = Frame(root)
@@ -338,6 +336,8 @@ def main_start(root):
 
     matrix_a_sheet = Sheet(
         main_frame,
+        edit_cell_validation=False,
+        enable_edit_cell_auto_resize=False,
         show_header=False,
         show_row_index=False,
         show_top_left=False,
@@ -356,11 +356,13 @@ def main_start(root):
         font=("Poppins", 25, "bold")
     )
     matrix_a_sheet.place(x=58, y=195.3)
-    matrix_a_sheet.enable_bindings("all")
+    matrix_a_sheet.enable_bindings("single_select", "edit_cell")
     matrix_a_sheet.align("center")
 
     matrix_b_sheet = Sheet(
         main_frame,
+        edit_cell_validation=False,
+        enable_edit_cell_auto_resize=False,
         show_header=False,
         show_row_index=False,
         show_top_left=False,
@@ -384,6 +386,7 @@ def main_start(root):
 
     matrix_c_sheet = Sheet(
         main_frame,
+        enable_edit_cell_auto_resize=False,
         show_header=False,
         show_row_index=False,
         show_top_left=False,
