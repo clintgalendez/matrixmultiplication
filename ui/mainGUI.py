@@ -442,6 +442,9 @@ def main_start(root):
     main_frame.matrix_b_sheet = matrix_b_sheet
     main_frame.matrix_c_sheet = matrix_c_sheet
 
+    main_frame.clear_matrix_a_button = clear_matrix_a_button
+    main_frame.clear_matrix_b_button = clear_matrix_b_button
+
     main_frame.canvas = canvas
 
     return main_frame

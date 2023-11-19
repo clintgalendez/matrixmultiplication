@@ -30,6 +30,7 @@ next_button = f1.next_button
 back_button = f1.back_button
 
 clear_matrix_a_button = f1.clear_matrix_a_button
+clear_matrix_b_button = f1.clear_matrix_b_button
 
 solution_description = f1.solution_description
 
@@ -38,7 +39,6 @@ matrix_b = f1.matrix_b_sheet
 matrix_c = f1.matrix_c_sheet
 
 canvas = f1.canvas
-
 
 def show_frame(frame_to_show):
     global current_frame
@@ -143,9 +143,13 @@ def show_solution_process(is_next: bool):
                 common = 0
 
 
-def clear_matrix_a():
-    #Clear the matrix
-    return
+def clear_cell(matrix):
+    currently_selected = matrix.get_currently_selected()
+    r = currently_selected.row
+    c = currently_selected.column
+
+    matrix.set_cell_data(r, c, value="")
+    matrix.refresh()
 
 
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
@@ -158,8 +162,8 @@ calculate_button.configure(command=lambda: root.after(time_quantum, calculate))
 next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
 back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
 
-clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: matrix_a.clear_matrix_a()))
-
+clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_a)))
+clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_b)))
 
 show_frame(f1)
 root.mainloop()
