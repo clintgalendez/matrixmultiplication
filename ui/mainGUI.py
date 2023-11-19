@@ -55,6 +55,8 @@ def main_start(root):
         file=relative_to_assets("button_2.png"))
     calculate_button = Button(
         main_frame,
+        cursor="hand2",
+        state="disabled",
         image=calculate_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -123,6 +125,8 @@ def main_start(root):
         file=relative_to_assets("button_4.png"))
     back_button = Button(
         main_frame,
+        cursor="hand2",
+        state="disabled",
         image=back_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -438,6 +442,8 @@ def main_start(root):
 
     main_frame.clear_matrix_a_button = clear_matrix_a_button
     main_frame.clear_matrix_b_button = clear_matrix_b_button
+
+    main_frame.reset_matrices_button = reset_matrices_button
 
     main_frame.solution_description = solution_description_variable
 
