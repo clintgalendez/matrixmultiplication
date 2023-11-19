@@ -33,6 +33,8 @@ by_5_size_button = f1.by_5_size_button
 
 calculate_button = f1.calculate_button
 
+try_again_button = f2.try_again_button
+
 next_button = f1.next_button
 back_button = f1.back_button
 
@@ -82,6 +84,13 @@ def register_cell():
 def format_cell():
     for i in range(matrix_size):
         for j in range(matrix_size):
+            formatted_value_a = begin_cell_format(matrix_a.get_cell_data(i, j))
+            formatted_value_b = begin_cell_format(matrix_b.get_cell_data(i, j))
+
+            if None in (formatted_value_a, formatted_value_b):
+                show_frame(f2)
+                return
+
             matrix_a.set_cell_data(i, j, begin_cell_format(matrix_a.get_cell_data(i, j)))
             matrix_b.set_cell_data(i, j, begin_cell_format(matrix_b.get_cell_data(i, j)))
 
@@ -100,28 +109,44 @@ def begin_cell_format(fraction):
         parts = fraction.split()
         # if there is only one part, it is a simple fraction
         if len(parts) == 1:
-            # split the fraction by slash
-            numerator, denominator = parts[0].split("/")
-            # convert the numerator and denominator to integers
-            numerator = int(numerator)
-            denominator = int(denominator)
-            # return the float value of the fraction
-            return numerator / denominator
+            # try to split the fraction by slash
+            try:
+                numerator, denominator = parts[0].split("/")
+                # convert the numerator and denominator to integers
+                numerator = int(numerator)
+                denominator = int(denominator)
+                # return the float value of the fraction
+                return numerator / denominator
+            # if it fails, it is an invalid input
+            except ValueError:
+                # display a message
+                print("Invalid fraction input: " + fraction)
+                # stop the execution
+                return None
         # if there are two parts, it is a mixed fraction
         elif len(parts) == 2:
-            # the first part is the whole number
-            whole = int(parts[0])
-            # split the second part by slash
-            numerator, denominator = parts[1].split("/")
-            # convert the numerator and denominator to integers
-            numerator = int(numerator)
-            denominator = int(denominator)
-            # return the float value of the mixed fraction
-            return whole + numerator / denominator
+            # try to split the second part by slash
+            try:
+                # the first part is the whole number
+                whole = int(parts[0])
+                numerator, denominator = parts[1].split("/")
+                # convert the numerator and denominator to integers
+                numerator = int(numerator)
+                denominator = int(denominator)
+                # return the float value of the mixed fraction
+                return whole + numerator / denominator
+            # if it fails, it is an invalid input
+            except ValueError:
+                # display a message
+                print("Invalid fraction input: " + fraction)
+                # stop the execution
+                return None
         # otherwise, it is an invalid input
         else:
-            # raise an exception
-            raise ValueError("Invalid fraction input")
+            # display a message
+            print("Invalid fraction input: " + fraction)
+            # stop the execution
+            return None
 
 
 def calculate():
@@ -208,6 +233,8 @@ by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_
 by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(5)))
 
 calculate_button.configure(command=lambda: root.after(time_quantum, register_cell))
+
+try_again_button.configure(command=lambda: root.after(time_quantum, lambda: show_frame(f1)))
 
 next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
 back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
