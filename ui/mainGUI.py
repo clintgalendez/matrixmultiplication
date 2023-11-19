@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import Canvas, Button, PhotoImage, Frame, Entry, StringVar
+from tkinter import Canvas, Button, PhotoImage, Frame, Entry, StringVar, Label
 
 from PIL import Image
 from tksheet import Sheet
@@ -33,6 +33,17 @@ def main_start(root):
         366.0,
         image=image_image_1
     )
+
+    logo_image = PhotoImage(
+        file=relative_to_assets("image_6.png"))
+    logo = Label(
+        main_frame,
+        image=logo_image,
+        borderwidth=0,
+        width=250,
+        height=225,
+    )
+    logo.place(x=918.0, y=230.0)
 
     reset_matrices_button_image = PhotoImage(
         file=relative_to_assets("button_1.png"))
@@ -153,6 +164,8 @@ def main_start(root):
         file=relative_to_assets("button_5.png"))
     fill_zero_b_button = Button(
         main_frame,
+        cursor="hand2",
+        state="disabled",
         image=fill_zero_b_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -170,6 +183,8 @@ def main_start(root):
         file=relative_to_assets("button_6.png"))
     clear_matrix_b_button = Button(
         main_frame,
+        cursor="hand2",
+        state="disabled",
         image=clear_matrix_b_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -196,6 +211,8 @@ def main_start(root):
         file=relative_to_assets("button_7.png"))
     fill_a_zero_button = Button(
         main_frame,
+        cursor="hand2",
+        state="disabled",
         image=fill_a_zero_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -213,6 +230,8 @@ def main_start(root):
         file=relative_to_assets("button_8.png"))
     clear_matrix_a_button = Button(
         main_frame,
+        cursor="hand2",
+        state="disabled",
         image=clear_matrix_a_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -329,15 +348,6 @@ def main_start(root):
         height=35.0
     )
 
-    image_image_6 = PhotoImage(
-        file=relative_to_assets("image_6.png"))
-    image_6 = canvas.create_image(
-        1040.0,
-        347.0,
-        image=image_image_6,
-        tags=("image_6",)
-    )
-
     matrix_a_sheet = Sheet(
         main_frame,
         edit_cell_validation=False,
@@ -389,7 +399,7 @@ def main_start(root):
     matrix_b_sheet.align("center")
 
     matrix_c_sheet = Sheet(
-        main_frame,
+        canvas,
         enable_edit_cell_auto_resize=False,
         show_header=False,
         show_row_index=False,
@@ -428,7 +438,9 @@ def main_start(root):
     main_frame.by_size_4_button_image = by_4_size_button_image
     main_frame.by_3_size_button_image = by_3_size_button_image
     main_frame.by_2_size_button_image = by_2_size_button_image
-    main_frame.image_image_6 = image_image_6
+    main_frame.logo_image = logo_image
+
+    main_frame.logo = logo
 
     main_frame.by_2_size_button = by_2_size_button
     main_frame.by_3_size_button = by_3_size_button
@@ -460,5 +472,3 @@ def main_start(root):
     main_frame.canvas = canvas
 
     return main_frame
-
-

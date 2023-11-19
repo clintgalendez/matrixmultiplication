@@ -45,12 +45,13 @@ clear_matrix_b_button = f1.clear_matrix_b_button
 fill_a_zero_button = f1.fill_a_zero_button
 fill_zero_b_button = f1.fill_zero_b_button
 
-
 solution_description = f1.solution_description
 
 matrix_a = f1.matrix_a_sheet
 matrix_b = f1.matrix_b_sheet
 matrix_c = f1.matrix_c_sheet
+
+logo = f1.logo
 
 canvas = f1.canvas
 
@@ -77,8 +78,12 @@ def set_matrix_size_submit(matrix_size_to_set):
     matrix_b.refresh()
     matrix_c.refresh()
 
-    canvas.itemconfigure("image_6", state="hidden")
+    logo.place_forget()
     calculate_button.configure(state="normal")
+    clear_matrix_a_button.configure(state="normal")
+    clear_matrix_b_button.configure(state="normal")
+    fill_a_zero_button.configure(state="normal")
+    fill_zero_b_button.configure(state="normal")
 
 
 def register_cell():
