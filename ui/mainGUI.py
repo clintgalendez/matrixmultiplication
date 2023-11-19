@@ -448,6 +448,9 @@ def main_start(root):
     main_frame.clear_matrix_a_button = clear_matrix_a_button
     main_frame.clear_matrix_b_button = clear_matrix_b_button
 
+    main_frame.fill_a_zero_button = fill_a_zero_button
+    main_frame.fill_zero_b_button = fill_zero_b_button
+
     main_frame.canvas = canvas
 
     return main_frame

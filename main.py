@@ -26,13 +26,15 @@ by_5_size_button = f1.by_5_size_button
 
 calculate_button = f1.calculate_button
 
-try_again_button = f2.try_again_button
-
 next_button = f1.next_button
 back_button = f1.back_button
 
 clear_matrix_a_button = f1.clear_matrix_a_button
 clear_matrix_b_button = f1.clear_matrix_b_button
+
+fill_a_zero_button = f1.fill_a_zero_button
+fill_zero_b_button = f1.fill_zero_b_button
+
 
 solution_description = f1.solution_description
 
@@ -67,84 +69,6 @@ def set_matrix_size_submit(matrix_size_to_set):
     canvas.itemconfigure("image_6", state="hidden")
 
 
-<<<<<<< HEAD
-=======
-def register_cell():
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
-
-    root.after(time_quantum, format_cell)
-
-
-def format_cell():
-    for i in range(matrix_size):
-        for j in range(matrix_size):
-            formatted_value_a = begin_cell_format(matrix_a.get_cell_data(i, j))
-            formatted_value_b = begin_cell_format(matrix_b.get_cell_data(i, j))
-
-            if None in (formatted_value_a, formatted_value_b):
-                show_frame(f2)
-                return
-
-            matrix_a.set_cell_data(i, j, begin_cell_format(matrix_a.get_cell_data(i, j)))
-            matrix_b.set_cell_data(i, j, begin_cell_format(matrix_b.get_cell_data(i, j)))
-
-    matrix_a.refresh()
-    matrix_b.refresh()
-    calculate()
-
-
-def begin_cell_format(fraction):
-    # try to convert the fraction to a float
-    try:
-        return float(fraction)
-    # if it fails, it might be a fraction or a mixed fraction
-    except ValueError:
-        # split the fraction by whitespace
-        parts = fraction.split()
-        # if there is only one part, it is a simple fraction
-        if len(parts) == 1:
-            # try to split the fraction by slash
-            try:
-                numerator, denominator = parts[0].split("/")
-                # convert the numerator and denominator to integers
-                numerator = int(numerator)
-                denominator = int(denominator)
-                # return the float value of the fraction
-                return numerator / denominator
-            # if it fails, it is an invalid input
-            except ValueError:
-                # display a message
-                print("Invalid fraction input: " + fraction)
-                # stop the execution
-                return None
-        # if there are two parts, it is a mixed fraction
-        elif len(parts) == 2:
-            # try to split the second part by slash
-            try:
-                # the first part is the whole number
-                whole = int(parts[0])
-                numerator, denominator = parts[1].split("/")
-                # convert the numerator and denominator to integers
-                numerator = int(numerator)
-                denominator = int(denominator)
-                # return the float value of the mixed fraction
-                return whole + numerator / denominator
-            # if it fails, it is an invalid input
-            except ValueError:
-                # display a message
-                print("Invalid fraction input: " + fraction)
-                # stop the execution
-                return None
-        # otherwise, it is an invalid input
-        else:
-            # display a message
-            print("Invalid fraction input: " + fraction)
-            # stop the execution
-            return None
-
-
->>>>>>> 00ddb4ea68733dd1fbdcf0b63a798ad23d65a955
 def calculate():
     # Initialize the result matrix with zeros
     result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
@@ -153,27 +77,21 @@ def calculate():
     for i in range(matrix_size):
         for j in range(matrix_size):
             for k in range(matrix_size):
-<<<<<<< HEAD
                 result[i][j] += int(matrix_a.get_cell_data(i, k)) * int(matrix_b.get_cell_data(k, j))
                 matrix_c.set_cell_data(i, j, result[i][j])
-=======
-                result[i][j] += (matrix_a.get_cell_data(i, k) * matrix_b.get_cell_data(k, j))
-                matrix_c.set_cell_data(i, j, round(result[i][j], 2))
->>>>>>> 00ddb4ea68733dd1fbdcf0b63a798ad23d65a955
 
     matrix_c.refresh()
     next_button.configure(state="normal")
 
 
 def show_solution_process(is_next: bool):
-    global row_a, column_b
+    global row_a, column_b, common
 
     matrix_a.dehighlight_all()
     matrix_b.dehighlight_all()
     matrix_c.dehighlight_all()
 
     if is_next:
-<<<<<<< HEAD
         history_stack.append((row_a, column_b, common))
         print(history_stack)
     elif history_stack:
@@ -186,15 +104,6 @@ def show_solution_process(is_next: bool):
             print(history_stack)
 
     print(row_a, column_b, common)
-=======
-        history_stack.append((row_a, column_b))
-    elif history_stack:
-        row_a, column_b = history_stack.pop()
-
-        # Check if there's another item in the stack
-        if history_stack:
-            row_a, column_b = history_stack[-1]
->>>>>>> 00ddb4ea68733dd1fbdcf0b63a798ad23d65a955
 
     for r in range(matrix_size):
         matrix_a.highlight_cells(
@@ -211,12 +120,12 @@ def show_solution_process(is_next: bool):
 
     current_solution_text = "C" + str(row_a + 1) + str(column_b + 1) + " = "
 
-    current_solution_text += (str(matrix_a.get_cell_data(row_a, 0)) + "(" +
-                              str(matrix_b.get_cell_data(0, column_b))) + ")"
+    current_solution_text += (matrix_a.get_cell_data(row_a, common) + "(" +
+                              matrix_b.get_cell_data(common, column_b)) + ")"
 
     for r in range(1, matrix_size):
-        current_solution_text += " + " + (str(matrix_a.get_cell_data(row_a, r)) + "(" +
-                                          str(matrix_b.get_cell_data(r, column_b))) + ")"
+        current_solution_text += " + " + (matrix_a.get_cell_data(row_a, r) + "(" +
+                                          matrix_b.get_cell_data(r, column_b)) + ")"
 
     solution_description.set(current_solution_text)
 
@@ -232,44 +141,45 @@ def show_solution_process(is_next: bool):
             row_a += 1
         else:
             row_a = 0
-
+            if common < matrix_size - 1:
+                common += 1
+            else:
+                common = 0
 
 def clear_cell(matrix):
-    # Commented code to delete selected row
-
-    # currently_selected = matrix.get_currently_selected()
-    # r = currently_selected.row
-    # c = currently_selected.column
-    # matrix.set_cell_data(r, c, value=None)
-
     for i in range(matrix_size):
         for j in range(matrix_size):
             matrix.set_cell_data(i, j, value=None)
             matrix.refresh()
+
+def fill_cell_values_zero(matrix):
+    data = matrix.get_sheet_data()
+    
+    for r, row in enumerate(data):
+        for c, cell in enumerate(row):
+            if cell is None or cell=="":
+                matrix.set_cell_data(r, c, 0)
+                matrix.refresh()
+    matrix.refresh()
+
+def reset_matrices():
+    pass
 
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
 by_3_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(3)))
 by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(4)))
 by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(5)))
 
-<<<<<<< HEAD
 calculate_button.configure(command=lambda: root.after(time_quantum, calculate))
-=======
-calculate_button.configure(command=lambda: root.after(time_quantum, register_cell))
-
-try_again_button.configure(command=lambda: root.after(time_quantum, lambda: show_frame(f1)))
->>>>>>> 00ddb4ea68733dd1fbdcf0b63a798ad23d65a955
 
 next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
 back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
 
 clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_a)))
 clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_b)))
-<<<<<<< HEAD
-=======
 
-# TODO: For (clint galendez) Add a function that it will disable calculate button if there's no data in the matrix
->>>>>>> 00ddb4ea68733dd1fbdcf0b63a798ad23d65a955
+fill_a_zero_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_a)))
+fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_b)))
 
 show_frame(f1)
 root.mainloop()
