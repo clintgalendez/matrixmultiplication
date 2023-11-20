@@ -299,6 +299,7 @@ def reset_matrices():
     matrix_a.dehighlight_all()
     matrix_b.dehighlight_all()
     matrix_c.dehighlight_all()
+    solution_description.set("")
 
 
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
