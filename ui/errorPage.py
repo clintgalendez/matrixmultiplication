@@ -67,11 +67,13 @@ def error_page_start(root):
         fill="#C42B21",
         outline="")
 
-    canvas.create_text(
+    error_message = canvas.create_text(
         490.0,
         333.0,
         anchor="nw",
         text="The input is nonnumerical.\nPlease try again.",
+        tags="error_message",
+        justify="center",
         fill="#C42B21",
         font=("Poppins Bold", 15 * -1)
     )
@@ -99,5 +101,9 @@ def error_page_start(root):
     error_page.image_image_3 = image_image_3
 
     error_page.try_again_button = try_again_button
+
+    error_page.canvas = canvas
+
+    error_page.error_message = error_message
 
     return error_page

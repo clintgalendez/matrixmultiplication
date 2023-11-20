@@ -1,7 +1,6 @@
 from pathlib import Path
 from tkinter import Canvas, Button, PhotoImage, Frame, Entry, StringVar, Label
 
-from PIL import Image
 from tksheet import Sheet
 
 ASSETS_PATH = Path(r"ui/assets/main")
@@ -370,7 +369,7 @@ def main_start(root):
         font=("Poppins", 25, "bold")
     )
     matrix_a_sheet.place(x=58, y=195.3)
-    matrix_a_sheet.enable_bindings("single_select", "edit_cell")
+    matrix_a_sheet.enable_bindings("all")
     matrix_a_sheet.align("center")
 
     matrix_b_sheet = Sheet(

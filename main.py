@@ -1,3 +1,5 @@
+import inspect
+import re
 from tkinter import Tk
 
 import ui.mainGUI as mainGUI
@@ -53,7 +55,10 @@ matrix_c = f1.matrix_c_sheet
 
 logo = f1.logo
 
-canvas = f1.canvas
+main_canvas = f1.canvas
+error_canvas = f2.canvas
+
+error_message = f2.error_message
 
 
 def show_frame(frame_to_show):
@@ -65,7 +70,7 @@ def show_frame(frame_to_show):
     frame_to_show.pack(fill="both", expand=True)
 
 
-def set_matrix_size_submit(matrix_size_to_set):
+def set_matrix_size_submit(matrix_size_to_set, font_size: int):
     global matrix_size
 
     matrix_size = matrix_size_to_set
@@ -74,9 +79,13 @@ def set_matrix_size_submit(matrix_size_to_set):
     matrix_b.set_sheet_data_and_display_dimensions(matrix_size, matrix_size)
     matrix_c.set_sheet_data_and_display_dimensions(matrix_size, matrix_size)
 
+    reset_to_defaults()
+
     matrix_a.refresh()
     matrix_b.refresh()
     matrix_c.refresh()
+
+    matrix_a.font(newfont=("Poppins", font_size, "bold"), reset_row_positions=True)
 
     logo.place_forget()
     calculate_button.configure(state="normal")
@@ -99,7 +108,13 @@ def format_cell():
             formatted_value_a = begin_cell_format(matrix_a.get_cell_data(i, j))
             formatted_value_b = begin_cell_format(matrix_b.get_cell_data(i, j))
 
-            if None in (formatted_value_a, formatted_value_b):
+            if isinstance(formatted_value_a, str):
+                error_canvas.itemconfig("error_message", text=formatted_value_a)
+                show_frame(f2)
+                return
+
+            if isinstance(formatted_value_b, str):
+                error_canvas.itemconfig("error_message", text=formatted_value_b)
                 show_frame(f2)
                 return
 
@@ -112,95 +127,44 @@ def format_cell():
 
 
 def begin_cell_format(fraction):
-    # try to convert the fraction to a float
-    try:
-        return float(fraction)
-    # if it fails, it might be a fraction or a mixed fraction
-    except ValueError:
-        # split the fraction by whitespace
-        parts = fraction.split()
-        # if there is only one part, it is a simple fraction
-        if len(parts) == 1:
-            # try to split the fraction by slash
-            try:
-                numerator, denominator = parts[0].split("/")
-                # convert the numerator and denominator to integers
-                numerator = int(numerator)
-                denominator = int(denominator)
-                # check for division by zero
-                if denominator == 0:
-                    print("Error: Division by zero in fraction input: " + fraction)
-                    return None
-                # return the float value of the fraction
-                return round(numerator / denominator, 2)
-            # if it fails, it might be a negative fraction or an invalid input
-            except ValueError:
-                if parts[0].startswith('-'):
-                    # Handle negative fraction
-                    try:
-                        numerator, denominator = parts[0][1:].split("/")
-                        # convert the numerator and denominator to integers
-                        numerator = -int(numerator)
-                        denominator = int(denominator)
-                        # check for division by zero
-                        if denominator == 0:
-                            print("Error: Division by zero in fraction input: " + fraction)
-                            return None
-                        # return the float value of the negative fraction
-                        return round(numerator / denominator, 2)
-                    except ValueError:
-                        # display a message for invalid input
-                        print("Invalid fraction input: " + fraction)
-                        return None
-                else:
-                    # display a message for invalid input
-                    print("Invalid fraction input: " + fraction)
-                    return None
-        # if there are two parts, it is a mixed fraction
-        elif len(parts) == 2:
-            # try to split the second part by slash
-            try:
-                # the first part is the whole number
-                whole = int(parts[0])
-                numerator, denominator = parts[1].split("/")
-                # convert the numerator and denominator to integers
-                numerator = int(numerator)
-                denominator = int(denominator)
-                # check for division by zero
-                if denominator == 0:
-                    print("Error: Division by zero in fraction input: " + fraction)
-                    return None
-                # return the float value of the mixed fraction
-                return round(whole + numerator / denominator, 2)
-            # if it fails, it might be a negative mixed fraction or an invalid input
-            except ValueError:
-                if parts[1].startswith('-'):
-                    # Handle negative mixed fraction
-                    try:
-                        whole = int(parts[0])
-                        numerator, denominator = parts[1][1:].split("/")
-                        # convert the numerator and denominator to integers
-                        numerator = -int(numerator)
-                        denominator = int(denominator)
-                        # check for division by zero
-                        if denominator == 0:
-                            print("Error: Division by zero in fraction input: " + fraction)
-                            return None
-                        # return the float value of the negative mixed fraction
-                        return round(whole + numerator / denominator, 2)
-                    except ValueError:
-                        # display a message for invalid input
-                        print("Invalid fraction input: " + fraction)
-                        return None
-                else:
-                    # display a message for invalid input
-                    print("Invalid fraction input: " + fraction)
-                    return None
-        # otherwise, it is an invalid input
-        else:
-            # display a message for invalid input
-            print("Invalid fraction input: " + fraction)
-            return None
+    fraction = str(fraction)
+    # Define regex patterns
+    simple_fraction_pattern = r'^(-?\d+(\.\d+)?)\/(-?\d+(\.\d+)?)$'
+    mixed_fraction_pattern = r'^(-?\d+(\.\d+)?) (-?\d+(\.\d+)?)\/(-?\d+(\.\d+)?)$'
+    whole_number_pattern = r'^(-?\d+(\.\d+)?)$'
+
+    # Check if fraction is empty
+    if not fraction:
+        return "There are cell/s that are empty. \n Please try again."
+
+    # Match whole number pattern
+    match_whole = re.match(whole_number_pattern, fraction)
+    if match_whole:
+        return float(match_whole.group(1))
+
+    # Match simple fraction pattern
+    match_simple = re.match(simple_fraction_pattern, fraction)
+    if match_simple:
+        numerator, _, denominator, _ = match_simple.groups()
+        numerator, denominator = int(numerator), int(denominator)
+        if denominator == 0:
+            print("Error: Division by zero in fraction input: " + fraction)
+            return "There are cell/s with division by zero which is not allowed. \n Please try again."
+        return round(numerator / denominator, 2)
+
+    # Match mixed fraction pattern
+    match_mixed = re.match(mixed_fraction_pattern, fraction)
+    if match_mixed:
+        whole, _, numerator, _, denominator, _ = match_mixed.groups()
+        whole, numerator, denominator = int(whole), int(numerator), int(denominator)
+        if denominator == 0:
+            print("Error: Division by zero in fraction input: " + fraction)
+            return "There are cell/s with division by zero which is not allowed. \n Please try again."
+        return round(whole + numerator / denominator, 2)
+
+    # Invalid input
+    print("Invalid fraction input: " + fraction)
+    return "There are cell/s that are nonnumerical.\nPlease try again."
 
 
 def calculate():
@@ -273,6 +237,20 @@ def show_solution_process(is_next: bool):
             row_a = 0
 
 
+def reset_to_defaults():
+    matrix_a.dehighlight_all()
+    matrix_b.dehighlight_all()
+    matrix_c.dehighlight_all()
+
+    next_button.configure(state="disabled")
+    back_button.configure(state="disabled")
+
+
+def begin_clear_cells(matrix):
+    reset_to_defaults()
+    clear_cell(matrix)
+
+
 def clear_cell(matrix):
     for i in range(matrix_size):
         for j in range(matrix_size):
@@ -292,20 +270,17 @@ def fill_cell_values_zero(matrix):
 
 
 def reset_matrices():
+    reset_to_defaults()
     clear_cell(matrix_a)
     clear_cell(matrix_b)
     clear_cell(matrix_c)
-    
-    matrix_a.dehighlight_all()
-    matrix_b.dehighlight_all()
-    matrix_c.dehighlight_all()
-    solution_description.set("")
+    return
 
 
-by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
-by_3_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(3)))
-by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(4)))
-by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(5)))
+by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2, 25)))
+by_3_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(3, 20)))
+by_4_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(4, 15)))
+by_5_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(5, 12)))
 
 calculate_button.configure(command=lambda: root.after(time_quantum, register_cell))
 
@@ -314,14 +289,13 @@ try_again_button.configure(command=lambda: root.after(time_quantum, lambda: show
 next_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(True)))
 back_button.configure(command=lambda: root.after(time_quantum, lambda: show_solution_process(False)))
 
-clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_a)))
-clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda: clear_cell(matrix_b)))
-
-fill_a_zero_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_a)))
-fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_b)))
+clear_matrix_a_button.configure(command=lambda: root.after(time_quantum, lambda: begin_clear_cells(matrix_a)))
+clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda: begin_clear_cells(matrix_b)))
 
 reset_matrices_button.configure(command=lambda: root.after(time_quantum, reset_matrices))
 
+fill_a_zero_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_a)))
+fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_b)))
 
 show_frame(f1)
 root.mainloop()
