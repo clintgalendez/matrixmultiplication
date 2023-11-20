@@ -127,14 +127,35 @@ def begin_cell_format(fraction):
                 # convert the numerator and denominator to integers
                 numerator = int(numerator)
                 denominator = int(denominator)
+                # check for division by zero
+                if denominator == 0:
+                    print("Error: Division by zero in fraction input: " + fraction)
+                    return None
                 # return the float value of the fraction
                 return round(numerator / denominator, 2)
-            # if it fails, it is an invalid input
+            # if it fails, it might be a negative fraction or an invalid input
             except ValueError:
-                # display a message
-                print("Invalid fraction input: " + fraction)
-                # stop the execution
-                return None
+                if parts[0].startswith('-'):
+                    # Handle negative fraction
+                    try:
+                        numerator, denominator = parts[0][1:].split("/")
+                        # convert the numerator and denominator to integers
+                        numerator = -int(numerator)
+                        denominator = int(denominator)
+                        # check for division by zero
+                        if denominator == 0:
+                            print("Error: Division by zero in fraction input: " + fraction)
+                            return None
+                        # return the float value of the negative fraction
+                        return round(numerator / denominator, 2)
+                    except ValueError:
+                        # display a message for invalid input
+                        print("Invalid fraction input: " + fraction)
+                        return None
+                else:
+                    # display a message for invalid input
+                    print("Invalid fraction input: " + fraction)
+                    return None
         # if there are two parts, it is a mixed fraction
         elif len(parts) == 2:
             # try to split the second part by slash
@@ -145,19 +166,40 @@ def begin_cell_format(fraction):
                 # convert the numerator and denominator to integers
                 numerator = int(numerator)
                 denominator = int(denominator)
+                # check for division by zero
+                if denominator == 0:
+                    print("Error: Division by zero in fraction input: " + fraction)
+                    return None
                 # return the float value of the mixed fraction
                 return round(whole + numerator / denominator, 2)
-            # if it fails, it is an invalid input
+            # if it fails, it might be a negative mixed fraction or an invalid input
             except ValueError:
-                # display a message
-                print("Invalid fraction input: " + fraction)
-                # stop the execution
-                return None
+                if parts[1].startswith('-'):
+                    # Handle negative mixed fraction
+                    try:
+                        whole = int(parts[0])
+                        numerator, denominator = parts[1][1:].split("/")
+                        # convert the numerator and denominator to integers
+                        numerator = -int(numerator)
+                        denominator = int(denominator)
+                        # check for division by zero
+                        if denominator == 0:
+                            print("Error: Division by zero in fraction input: " + fraction)
+                            return None
+                        # return the float value of the negative mixed fraction
+                        return round(whole + numerator / denominator, 2)
+                    except ValueError:
+                        # display a message for invalid input
+                        print("Invalid fraction input: " + fraction)
+                        return None
+                else:
+                    # display a message for invalid input
+                    print("Invalid fraction input: " + fraction)
+                    return None
         # otherwise, it is an invalid input
         else:
-            # display a message
+            # display a message for invalid input
             print("Invalid fraction input: " + fraction)
-            # stop the execution
             return None
 
 
