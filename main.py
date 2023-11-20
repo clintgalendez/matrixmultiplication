@@ -292,7 +292,13 @@ def fill_cell_values_zero(matrix):
 
 
 def reset_matrices():
-    pass
+    clear_cell(matrix_a)
+    clear_cell(matrix_b)
+    clear_cell(matrix_c)
+    
+    matrix_a.dehighlight_all()
+    matrix_b.dehighlight_all()
+    matrix_c.dehighlight_all()
 
 
 by_2_size_button.configure(command=lambda: root.after(time_quantum, lambda: set_matrix_size_submit(2)))
@@ -312,6 +318,9 @@ clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda:
 
 fill_a_zero_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_a)))
 fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_b)))
+
+reset_matrices_button.configure(command=lambda: root.after(time_quantum, reset_matrices))
+
 
 show_frame(f1)
 root.mainloop()
