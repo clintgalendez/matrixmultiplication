@@ -276,9 +276,8 @@ def show_solution_process(is_next: bool):
 def clear_cell(matrix):
     for i in range(matrix_size):
         for j in range(matrix_size):
-            matrix.set_cell_data(i, j, value=None)
+            matrix.set_cell_data(i, j, value="")
             matrix.refresh()
-
 
 def fill_cell_values_zero(matrix):
     data = matrix.get_sheet_data()
@@ -322,6 +321,7 @@ fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda:fil
 
 reset_matrices_button.configure(command=lambda: root.after(time_quantum, reset_matrices))
 
-
 show_frame(f1)
 root.mainloop()
+
+# VSCode Git test
