@@ -58,8 +58,6 @@ logo = f1.logo
 main_canvas = f1.canvas
 error_canvas = f2.canvas
 
-error_message = f2.error_message
-
 
 def show_frame(frame_to_show):
     global current_frame
@@ -81,11 +79,17 @@ def set_matrix_size_submit(matrix_size_to_set, font_size: int):
 
     reset_to_defaults()
 
+    matrix_a.dehighlight_all()
+    matrix_b.dehighlight_all()
+    matrix_c.dehighlight_all()
+
     matrix_a.refresh()
     matrix_b.refresh()
     matrix_c.refresh()
 
     matrix_a.font(newfont=("Poppins", font_size, "bold"), reset_row_positions=True)
+    matrix_b.font(newfont=("Poppins", font_size, "bold"), reset_row_positions=True)
+    matrix_c.font(newfont=("Poppins", font_size, "bold"), reset_row_positions=True)
 
     logo.place_forget()
     calculate_button.configure(state="normal")
@@ -149,7 +153,7 @@ def begin_cell_format(fraction):
         numerator, denominator = int(numerator), int(denominator)
         if denominator == 0:
             print("Error: Division by zero in fraction input: " + fraction)
-            return "There are cell/s with division by zero which is not allowed. \n Please try again."
+            return "There are cell/s with division by zero \n which is not allowed. \n Please try again."
         return round(numerator / denominator, 2)
 
     # Match mixed fraction pattern
@@ -170,6 +174,7 @@ def begin_cell_format(fraction):
 def calculate():
     # Initialize the result matrix with zeros
     result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
+    clear_cell(matrix_c)
 
     # Perform matrix multiplication
     for i in range(matrix_size):
@@ -241,6 +246,7 @@ def reset_to_defaults():
     matrix_a.dehighlight_all()
     matrix_b.dehighlight_all()
     matrix_c.dehighlight_all()
+    solution_description.set("")
 
     next_button.configure(state="disabled")
     back_button.configure(state="disabled")
@@ -254,18 +260,19 @@ def begin_clear_cells(matrix):
 def clear_cell(matrix):
     for i in range(matrix_size):
         for j in range(matrix_size):
-            matrix.set_cell_data(i, j, value=None)
+            matrix.set_cell_data(i, j, value="")
             matrix.refresh()
 
 
 def fill_cell_values_zero(matrix):
     data = matrix.get_sheet_data()
-    
+
     for r, row in enumerate(data):
         for c, cell in enumerate(row):
-            if cell is None or cell=="":
+            if cell is None or cell == "":
                 matrix.set_cell_data(r, c, 0)
                 matrix.refresh()
+
     matrix.refresh()
 
 
@@ -294,8 +301,10 @@ clear_matrix_b_button.configure(command=lambda: root.after(time_quantum, lambda:
 
 reset_matrices_button.configure(command=lambda: root.after(time_quantum, reset_matrices))
 
-fill_a_zero_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_a)))
-fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda:fill_cell_values_zero(matrix_b)))
+fill_a_zero_button.configure(command=lambda: root.after(time_quantum, lambda: fill_cell_values_zero(matrix_a)))
+fill_zero_b_button.configure(command=lambda: root.after(time_quantum, lambda: fill_cell_values_zero(matrix_b)))
+
+# TODO: Change button selected size to green
 
 show_frame(f1)
 root.mainloop()

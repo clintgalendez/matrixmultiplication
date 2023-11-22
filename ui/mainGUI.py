@@ -418,7 +418,7 @@ def main_start(root):
         font=("Poppins", 25, "bold")
     )
     matrix_c_sheet.place(x=888.3, y=195.3)
-    matrix_c_sheet.enable_bindings("all")
+    matrix_c_sheet.enable_bindings("copy", "drag_select", "single_select", "column_drag_and_drop", "row_drag_and_drop", "column_select", "row_select")
     matrix_c_sheet.align("center")
 
     # Reference to all the variables
